@@ -1,26 +1,32 @@
 import tkinter as tk
 import random
+from tkinter import ttk
+
+
 jogador = {
     "nome": "nicolas",
     "vida": 100,
     'ataque': 20
     }
 
+
 monstro = {
     "nome": "Goblin",
-    "vida": 50,
-    'ataque': 10
+    "vida": 100,
+    'ataque': 25
     }
+
 
 def atualizar():
     texto_jogador.config(
-        text=f"vida de {jogador['nome']}: {jogador["vida"]}"
+        text=f"vida de {jogador['nome']}: {jogador['vida']}"
     )
     texto_monstro.config(
-        text=f"vida de {monstro['nome']}: {monstro["vida"]}"
+        text=f"vida de {monstro['nome']}: {monstro['vida']}"
     )
 
-
+    barra_vida_P['value'] = jogador["vida"]
+    barra_vida_M['value'] = monstro["vida"]
 def atacar():
 
     if jogador["vida"] <= 0 or monstro["vida"] <=0:
@@ -28,21 +34,27 @@ def atacar():
 
     dano = random.randint(5, jogador["ataque"])
     monstro["vida"] -= dano
-
-    mensagem = f"voce causou {dano} de dano!"
+    if dano > 17:
+        mensagem =f"critico! voce causou {dano} de dano!"
+    elif dano < 7:
+        mensagem = f"droga! voce causou {dano} de dano!"
+    else:
+        mensagem = f"voce causou {dano} de dano!"
 
     if monstro["vida"] > 0:
 
-        dano_monstro = random.randint(1, monstro["ataque"])
+        dano_monstro = random.randint(5, monstro["ataque"])
         jogador["vida"] -= dano_monstro
 
-    mensagem += f"\nO monstro causou {dano_monstro} de dano"
+        mensagem += f"\nO monstro causou {dano_monstro} de dano"
 
     if jogador["vida"] <= 0:
         mensagem = "voce perdeu"
+        texto_mensagem.config(bg="red", fg="white")
 
     elif monstro["vida"] <= 0:
         mensagem = "voce venceu"
+        texto_mensagem.config(bg="green", fg="white")
 
     texto_mensagem.config(text=mensagem)
 
@@ -50,6 +62,7 @@ def atacar():
 
 def fugir():
     texto_mensagem.config(text="voce fugiu da batalha")
+    texto_mensagem.config(bg="gray")
 
 
 janela = tk.Tk()
@@ -79,17 +92,28 @@ texto_mensagem.pack(pady=20)
 
 botao_atacar = tk.Button(
     janela,
-    text="atacar",
+    text="atacar", bg="blue", fg="white",
     command=atacar
 )
 botao_atacar.pack(pady=5)
 
 botao_fugir = tk.Button(
     janela,
-    text="fugir",
+    text="fugir", bg="blue", fg="white",
     command=fugir
 )
 botao_fugir.pack(pady=5)
+
+
+barra_vida_P = ttk.Progressbar(janela, length=300, maximum=jogador['vida'],)
+barra_vida_P.place(x=120, y=80)
+
+
+barra_vida_M = ttk.Progressbar(janela, length=300, maximum=monstro['vida'],)
+barra_vida_M.pack(pady=5)
+
+
+
 
 atualizar()
 
